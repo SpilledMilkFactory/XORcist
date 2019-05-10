@@ -11,9 +11,9 @@ import main.XORcist;
 import java.util.*;
 //import org.apache.commons.*;
 public class NetworkingTool extends XORcist{//XOR is used in supernetting
-    public ArrayList<String> ipList = new ArrayList<>();//user must include CIDR notation
-    public ArrayList<String> subnetMask = new ArrayList<>();
-    public ArrayList<Integer> cidrList = new ArrayList<>();
+    protected ArrayList<String> ipList = new ArrayList<>();//user must include CIDR notation
+    protected ArrayList<String> subnetMask = new ArrayList<>();
+    protected ArrayList<Integer> cidrList = new ArrayList<>();
     
     //populates the IP Table and CIDR list of any NetworkingTool object
     public void populateIPTableManually(){
@@ -23,19 +23,29 @@ public class NetworkingTool extends XORcist{//XOR is used in supernetting
             System.out.println("Enter an IP address with CIDR notation: ");
             this.ipList.add(kbd.nextLine());
             if (containsIgnoreCase("q",this.ipList)){
-                this.ipList.remove(this.ipList.size()-1);
-                sentinel = "Q";
+                if(this.ipList.size()>1){
+                    this.ipList.remove(this.ipList.size()-1);
+                    sentinel = "Q";
+                }else{
+                    sentinel = "Q";
+                }
             }
-            for(String s: this.ipList){
-                this.cidrList.add(Integer.parseInt(s.substring(s.indexOf('/')+1)));//taking the CIDR notation from each entered IP
-                for(int i = 1; i<(this.cidrList.size()-1);i++){
-                    for (int j = 0; j<i; j++){
-                        if(Objects.equals(this.cidrList.get(i), this.cidrList.get(j)))
-                            this.cidrList.remove(j);//list populates with multiple duplicates, 
-                    }//subnets will ALWAYS be the same when starting so duplicates in a supernetting scenario are redundant
-                }// except 1st and last always populate but the below line takes care of the dupliate at index 0
-            }
-            this.cidrList.remove(0);
+            this.ipList.forEach((s) -> {
+                try{
+                    this.cidrList.add(Integer.parseInt(s.substring(s.indexOf('/')+1)));//taking the CIDR notation from each entered IP
+                    for(int i = 1; i<(this.cidrList.size()-1);i++){
+                        for (int j = 0; j<i; j++){
+                            if(Objects.equals(this.cidrList.get(i), this.cidrList.get(j)))
+                                this.cidrList.remove(j);//list populates with multiple duplicates,
+                        }//subnets will ALWAYS be the same when starting so duplicates in a supernetting scenario are redundant
+                    }// except 1st and last always populate but the below line takes care of the dupliate at index 0
+                }catch(NumberFormatException nfe){
+                    System.out.println("Goodbye!");
+                    System.exit(0);
+                }finally{
+                    this.cidrList.remove(0);
+                }
+            });//end of functional operator 
         }
     }
     //##########################################################################
@@ -122,7 +132,6 @@ public class NetworkingTool extends XORcist{//XOR is used in supernetting
                         repeat = false;
                         break;
                     }
-                    
                 }
             }
         }
@@ -140,10 +149,12 @@ public class NetworkingTool extends XORcist{//XOR is used in supernetting
         
         //splits up full binary supenet address into byte values in Decimal
         int[] supernetIpBytes = new int[4];
-        supernetIpBytes[0] = Integer.parseInt(compareResult.substring(0,8),2);
-        supernetIpBytes[1] = Integer.parseInt(compareResult.substring(8,16),2);
-        supernetIpBytes[2] = Integer.parseInt(compareResult.substring(16,24),2);
-        supernetIpBytes[3] = Integer.parseInt(compareResult.substring(24,32),2);
+        int start=0,end=8;
+        for(int i=0;i<4;i++){
+            supernetIpBytes[i] = Integer.parseInt(compareResult.substring(start,end),2);
+            start+=8;
+            end+=8;
+        }
 
         //display decimal supernet IP address
         System.out.println("\nSupernet IP address: ");
@@ -153,7 +164,6 @@ public class NetworkingTool extends XORcist{//XOR is used in supernetting
             }else{
                 System.out.print(supernetIpBytes[i]);
             }
-            
         }
         System.out.print("/"+supernetCIDR);
         
@@ -169,24 +179,33 @@ public class NetworkingTool extends XORcist{//XOR is used in supernetting
             }
         }
         //converts supernet Subnet Mask from binary to decimal
-        int[] supernetSubnetBytes = new int[4];
-        supernetSubnetBytes[0] = Integer.parseInt(supernetSubnetMask.substring(0,8),2);
-        supernetSubnetBytes[1] = Integer.parseInt(supernetSubnetMask.substring(8,16),2);
-        supernetSubnetBytes[2] = Integer.parseInt(supernetSubnetMask.substring(16,24),2);
-        supernetSubnetBytes[3] = Integer.parseInt(supernetSubnetMask.substring(24,32),2);
-        
-        
-        //display decimal supernet Subnet Mask
         System.out.println("\nSupernet Subnet Mask:");
+        int[] supernetSubnetBytes = new int[4];
+        start=0;
+        end=8;
         for(int i=0;i<4;i++){
+            supernetSubnetBytes[i] = Integer.parseInt(supernetSubnetMask.substring(start,end),2);
             if(i!=3){
                 System.out.print(supernetSubnetBytes[i]+"."); 
             }else{
                 System.out.print(supernetSubnetBytes[i]);
             }
-            
+            start+=8;
+            end+=8;
         }
         System.out.println();
+    }
+    
+    //##########################################################################
+    //Checks full ArrayLists for a specified string
+    private boolean containsIgnoreCase(String sentinel, ArrayList<String> list){
+        return list.stream().anyMatch((s) -> (s.equalsIgnoreCase(sentinel)));
+    }
+    
+     //prints out a vertical list of IP addresses
+    public void printIPsVertical(NetworkingTool tool){
+        System.out.println("\nYou entered the IP addresses:");
+        tool.ipList.forEach((ip) -> {System.out.println(ip);});
     }
 }
         

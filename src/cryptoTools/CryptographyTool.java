@@ -1,31 +1,27 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+Christopher Sutton
+5/10/2019
+CSC201 final project
+Tool inside XORcist program
+Tool is responsible for using bitwise XORing to accompblish:
+Function B) encrypt or decrypt given text or file contents through use of bitwise-XORing 
+with a random number of keys assigned to each run
  */
 package cryptoTools;
 import java.io.*;
 import java.util.*;
 import main.XORcist;
-import sun.misc.*;
 
     public class CryptographyTool extends XORcist{
-        public String type;
-        public StringBuilder binaryInput;
-        public int numChars;
-        public String[] keys;
-        final File keysFile = new File("keys.dat");
-        final File cipherTextRecall = new File("cipherText.dat");
+        protected String[] keys;
+        protected final File keysFile = new File("keys.dat");
+        protected final File cipherTextRecall = new File("cipherText.dat");
     
     //##########################################################################
     public static class XOREncryptor extends CryptographyTool{
-
-        public XOREncryptor(){
-            this.type = "Encryptor";
-            this.binaryInput = new StringBuilder();
-            this.numChars = 0;
-            //the keys variable isn't meant to be initialized upon construction
-        }
+    private int numChars =0;
+    private final StringBuilder binaryInput = new StringBuilder();
+    
         //######################################################################
         
         //returns 8 binary bits for each character in input String without spaces
@@ -40,7 +36,7 @@ import sun.misc.*;
         }
         //######################################################################
         //generates random binary strings to XOR with
-        public String randomBinaryString(int length){
+        private String randomBinaryString(int length){
             String keyString = "";
             for(int i=0;i<length;i++){
                 keyString += (String.format("%8s",Integer.toBinaryString((int)(Math.random() * 256))).replace(" ","0"));
@@ -50,9 +46,9 @@ import sun.misc.*;
         }
         //encrypts the message via bitwise XORing
         public void encrypt(String original){
-            int numberOfKeys = (int)(Math.random() * 10);//TEMPLINE //TEMPLINE
+            int numberOfKeys = (int)(Math.random() * 100);//TEMPLINE //TEMPLINE
             this.keys = new String[numberOfKeys];
-            System.out.println("The keys used to encrypt are: ");
+            System.out.println("The keys used to encrypt are: (("+numberOfKeys+") keys used)");
             
             for(int i=0;i<numberOfKeys;i++){
                 this.keys[i] = randomBinaryString(numChars);
@@ -92,32 +88,24 @@ import sun.misc.*;
         }
         //######################################################################
         //converts byte array into a readable string
-        public static String base64Encode(byte[] bytes) {
+        private String base64Encode(byte[] bytes) {
             return Base64.getEncoder().encodeToString(bytes).replaceAll("\\s","");
         }
         
         //encodes String into byte array using bitwise XORing against keys
-        public String encode(String s, String key) {
+        private String encode(String s, String key) {
             return base64Encode(xorBytes(s.getBytes(), key.getBytes()));
         }  
     }   
     //##########################################################################
     public static class XORDecryptor extends CryptographyTool{
         
-        public XORDecryptor(){
-            type = "Decryptor";
-            binaryInput = new StringBuilder();
-            numChars = 0;
-            //the other two variables aren't meant to be initialized yet
-        }
-        //######################################################################
         //reads the keys from keys.dat to be able to decrypt the cipherText
         public void readKeysFromFile() throws FileNotFoundException, IOException{
-           String row;
            keys = new String[(int)this.keysFile.length()];
            try(RandomAccessFile raf = new RandomAccessFile(keysFile, "r");){//can only be read from
                for(int i=0;i<keysFile.length();i++){
-                   row = raf.readUTF();
+                   String row = raf.readUTF();
                    this.keys[i] = row;
                }
                raf.close();
@@ -130,6 +118,7 @@ import sun.misc.*;
             String text;
             try(RandomAccessFile raf = new RandomAccessFile(cipherTextRecall,"r")){
                 text = raf.readUTF();
+                raf.close();
             }
             return text;
         }
@@ -137,29 +126,36 @@ import sun.misc.*;
         //######################################################################
         //decrypts the cipherText using the keys stored in keys.dat
         public void decrypt(String cipherText){
-            //reversing the stored keys list for decryption
-            for(int i=0; i<this.keys.length/2; i++){
-                String temp = this.keys[i];
-                this.keys[i] = this.keys[this.keys.length -i -1];
-                this.keys[this.keys.length -i -1] = temp;
+            String binaryClearText = "";
+            for (String key : this.keys) {
+                binaryClearText = decode(cipherText, key);
+                System.out.println("\nCleartext in binary is:\n" + binaryClearText);
+                break;
             }
-            for (int i=0;i<this.keys.length;i++) {
-                String decodeResults = (decode(cipherText, keys[i]));
-                System.out.println("Cleartext is: " + decode(decodeResults, keys[i]));
+            int[] bytes = new int[(binaryClearText.length()/8)];//array with enough room for 
+            int start=0;
+            int end=8;
+            System.out.println("\nCleartext is: ");
+            for(int i=0;i<(binaryClearText.length()/8);i++){//any number of bytes
+                bytes[i] = Integer.parseInt(binaryClearText.substring(start,end),2);
+                System.out.print((char)bytes[i]);
+                start +=8;
+                end+=8;
             }
+            System.out.println();
         }
-        public byte[] base64Decode(String s) {
+        private byte[] base64Decode(String s) {
             return Base64.getDecoder().decode(s);
         }
         
-        public String decode(String s, String key) {
+        private String decode(String s, String key) {
             return new String(xorBytes(base64Decode(s), key.getBytes()));
         }
-        
     }
+    
     //##########################################################################
     //performs Bitwise XORing on bytes using keys
-    public byte[] xorBytes(byte[] a, byte[] key) {
+    protected byte[] xorBytes(byte[] a, byte[] key) {
         byte[] bytes = new byte[a.length];
         for (int i=0; i<a.length; i++) {
             bytes[i] = (byte)(a[i] ^ key[i%key.length]);
