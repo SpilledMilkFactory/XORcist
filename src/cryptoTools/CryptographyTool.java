@@ -5,6 +5,115 @@ CSC201 final project
 Tool inside XORcist program
 Tool is responsible for using bitwise XORing to accompblish:
 Function B) encrypt or decrypt given text or file through use of bitwise-XORing
+
+PSEUDOCODE:
+
+CRYPTOGRAPHY TOOL CLASS extends XORcist:
+String keys[]
+create file object reference for keys file
+create file object reference for cipherText
+
+XOR BYTES(text,key(s)) METHOD:
+create byte array as long as the text string
+for (length of text)
+convert each character to bytes and XOR them using the ^ operator
+add the XOR values to a new array
+return array of XOR values
+
+
+XOR ENCRYPTOR CLASS:
+int numChars
+String binaryInput
+
+TEXTTOBINARY METHOD:
+numChars = text length
+create new char array[numchars]
+for #chars length
+    charArray[i] = charAt i
+pad binary format to 8 bits and replace any spaces with 0's
+return binary string
+
+RANDOM BINARY STRING METHOD:
+for length of input text
+assign a variable random # from 0-256
+convert it to binary
+pad it to 8 bits
+return random binary string
+
+ENCRYPT METHOD:
+inumberOfKeys = random#-
+keys[] = new String[numberOfKeys];
+display the keys and # of keys
+
+for # keys
+    keys[i] = randomBinaryString(numChars);
+    display key
+
+WRITE KEYS TO FILE METHOD:
+CREATE raf = reference to (keysFile,"rw"))
+reset raf.length
+write all keys to file
+close file
+display that all data was read
+
+BITWISE COMPARE METHOD:
+binaryInput set length
+temp = binaryInput
+create raf = reference to (cipherTextRecall,"rw")
+for # keys
+    result = encode(temp, keys)
+    display result
+    temp = result
+write temp to file
+close file
+return temp
+
+BASSE64 ENCODER (bytes[]) METHOD:
+use Base64.getEncoder().encodeToString(bytes)
+remove spaces
+
+ENCODE(text, key) METHOD:
+use base64Encode(xorBytes(text.getBytes(), key.getBytes
+
+XOR DECRYPTOR CLASS:
+
+READ KEYS FROM FILE METHOD:
+create raf reference to (keysFile, "r")
+for keysfile.length
+temp = readUTF
+keys[i] = temp
+close file
+display that all data was read successfully
+
+READ CIPHERTEXT FROM FILE METHOD:
+String text;
+create raf reference to (cipherTextRecall,"r")
+text = readUTF();
+close file
+return text;
+
+DECRYPT METHOD:
+String binaryClearText;
+for # keys
+    binaryClearText = decode(cipherText, key);
+
+create new int array= new int[(binaryClearText.length()/8)]
+int start=0;
+int end=8;
+display clearText
+for(binaryClearText.length()/8)
+    intArray[i] = Integer.parseInt(binaryClearText.substring(start,end),2);
+    display character bytes
+    start +=8;
+    end+=8;
+
+BASE64 DECODE METHOD:
+create byte array for base64Decode(cipherText)
+use Base64.getDecoder().decode(cipherText);
+        
+DECODE(text,key) METHOD:
+return new String(xorBytes(base64Decode(text), key.getBytes()));
+
  */
 package cryptoTools;
 import java.io.*;

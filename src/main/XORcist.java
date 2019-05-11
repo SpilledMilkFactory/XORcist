@@ -6,6 +6,52 @@ XORcist
 Program is responsible for using bitwise XORing to:
 A) take a collection of IP addresses and return a valid supernet cidr notation for subnet
 B) encrypt or decrypt any given text or file through use of bitwise-XORing
+
+PSEUDOCODE:
+
+MAIN METHOD:
+display welcome message
+display menu options to user
+switch choice
+case 0:
+    prompt user for encryptor or decryptor
+    switch choice (nested switch)
+        case 0:
+            create new XOREncryptor object
+            prompt user for input text
+            store input text
+            display input text in binary
+
+            encryptor.encrypt(input text)
+            call writeKeysToFile method
+            call bitwise compare method
+            prompt user to contniue or not
+            if continue
+                repeat whole program
+            if quit
+                exit program
+
+        case 1:
+            create new XORDecryptor object
+            call readKeysFromFile method
+            call decrypt method with (readCipherTextFromFile as parameter
+            prompt user to contniue or not
+            if continue
+                repeat whole program
+            if quit
+                exit program
+
+case 1:
+    create new Networking Tool object
+    call populateIPTableManually method
+    call printIPsVertical method
+    call IPtoBinary method
+    call bitwise compare method
+    prompt user to contniue or not
+        if continue
+            repeat whole program
+        if quit
+            exit program
  */
 package main;
 import netTools.NetworkingTool;

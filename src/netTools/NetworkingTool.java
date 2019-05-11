@@ -5,7 +5,75 @@ CSC201 final project
 Tool inside XORcist program
 Tool is responsible for using bitwise XORing to accompblish:
 Function A) take a collection of IP addresses and return a valid supernet cidr notation for subnet
- */
+ 
+PSEUDOCODE:
+
+NETWORKINGTOOL CLASS extends XORCist:
+ArrayList cidrLis
+ArrayList ipList
+ArrayList subnetMasks
+
+POPULATE IP TABLE METHOD:
+declare sentinel to proceed value
+handle if user wants to quit
+for ipList size
+store the CIDR notation from each entered IP
+for cidrList size
+    if(Objects = cidrList(i),cidrList(j)))
+        remove duplicates
+remove duplicates (only one is needed)
+         
+IP TO BINARY METHOD:
+String[] ipAddress
+int[][] gridIPs
+int[] dot = new int[4];//indexing values for each byte
+String[][] binaryIPs//used for the actual XORing
+displya IP table
+for  ipList size
+ipAddress[i] = ipList.get(i).substringipList indexOf /'
+separate each byte via the '.'s
+
+for 4 iterations
+    if (j==3)
+        gridIPs[i][j] = parseInt(ipAddress[i] 4th byte
+    else
+        gridIPs[i][j] = parseInt(ipAddress[i] increment byte# each time
+display IPaddress
+convert IP addresses to binary and store them in ipAddress array
+
+BITWISE COMPARE METHOD:
+String[][] fullBinaryTable [iplist size][32]
+String compareResult = "";
+indexing values for each byte in array[]
+populate ipList binary values to full binary table
+using index variables for the spaces in the IP table
+display Full Binary IP Table
+convert multi-dimensional array into single-dimensional array
+scans each column of the full binary table
+use XORing logic to output and store either a 0 or 1 depending
+display supernet network bits
+display dupernet CIDR notation
+if(result length < 32){
+    fill in remaining 0's to make a full 32 bit address
+display full 32 bit address
+convert byte values into decimals
+add necessary '.'s
+display decimal supernet IP address
+if(result length < 32){
+    fill in remaining 0's to make a full 32 bit address
+
+create binary value variable for CIDR notation
+
+
+convert supernet Subnet Mask from binary to decimal
+display supernet subnet mask
+int[] supernetSubnetBytes = new int[4];
+
+CREATE METHOD TO CHECK ARRAYLIST FOR =IGNORECASE
+
+CREATE METHOD TO PRINT IP addresses vertically(in rows)
+
+*/
 package netTools;
 import main.XORcist;
 import java.util.*;
