@@ -57,7 +57,7 @@ package main;
 import netTools.NetworkingTool;
 import cryptoTools.CryptographyTool.*;
 import java.util.*;
-import java.io.*;//TODO make reading a list of IPs from txt file available
+import java.io.*;//TODO make reading a list of IPs from txt file available (will add later)
 public class XORcist{
     public static Scanner kbd = new Scanner(System.in);
     
